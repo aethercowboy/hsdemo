@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using module;
+using module.StartupFilters;
 using System;
 
 [assembly: HostingStartup(typeof(HostingStartup))]
@@ -10,15 +12,18 @@ namespace module
     {
         void IHostingStartup.Configure(IWebHostBuilder builder)
         {
-            builder.ConfigureServices(_ =>
+            builder.ConfigureServices((_, services) =>
             {
+                services.AddTransient<IStartupFilter, ModuleStartupFilter>();
+
                 Console.WriteLine("Configuring services for Module");
             });
 
-            builder.Configure(app =>
-            {
-                Console.WriteLine("Configuring Module");
-            });
+            // Use an IStartupFilter instead. See StartupFilters\ModuleStartupFilter.cs
+            //builder.Configure(app =>
+            //{
+            //    Console.WriteLine("Configuring Module");
+            //});
         }
     }
 }
